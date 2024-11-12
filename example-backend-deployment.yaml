@@ -1,0 +1,51 @@
+appVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: example-backend
+    strategy:
+      type: RollingUpdate
+    template:
+      metadata:
+        labels: example-backend
+      containers:
+      - name: redis
+        image: redis/redis-stack
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 6379
+          name: redis
+          protocol: TCP
+        - containerPort: 8001
+          name: redis-stack
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 1
+      - name: server
+        image: kube-learn/python
+        ports:
+          - containerPort: 5080
+            name: server
+            protocol: TCP
+        env:
+          - name: CELERY_BROKER_URL
+            value: "redis://redis:6379"
+          - name: CELERY_RESULT_BACKEND
+            value: "redis://redis:6379"
+      - name: celery-worker
+        image: example/worker
+        ports:
+          - containerPort: 5555
+            name: flower
+            protocol: TCP
+        env:
+          - name: CELERY_BROKER_URL
+            value: "redis://redis:6379"
+          - name: CELERY_RESULT_BACKEND
+            value: "redis://redis:6379"
+

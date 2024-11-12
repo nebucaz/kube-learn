@@ -1,0 +1,29 @@
+version: '3'
+services:
+  redis:
+    image: redis/redis-stack
+    ports:
+      - 6379:6379
+      - 8001:8001
+  server:
+    image: kube-learn/python
+    command: python -m example.server
+    ports:
+      - 5001:5001
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  worker:
+    image: kube-learn/python
+    command: celery -A example.worker worker --loglevel=DEBUG
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+  flower:
+    image: kube-learn/python
+    command: celery flower --port=5555
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    ports:
+      - 5555:5555
