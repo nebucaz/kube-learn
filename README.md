@@ -4,6 +4,7 @@ Learning Kubernetes
 ## Links
 - [Tutorial](https://kubernetes.io/docs/tutorials/)
 - [Docs](https://kubernetes.io/docs/)
+- [Pod Communication](https://kubernetes.io/docs/tasks/access-application-cluster/communicate-containers-same-pod-shared-volume/)
 
 ## Create deployment
 ```bash
