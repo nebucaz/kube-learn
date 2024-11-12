@@ -1,3 +1,0 @@
-resources:
-  - example-backend-deployment.yaml
-  - example-backend-service.yaml
