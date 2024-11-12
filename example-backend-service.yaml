@@ -8,13 +8,17 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 5080
-      targetPort: 5080
+    - port: 5001
+      targetPort: server
       protocol: TCP
       name: server
     - port: 8001
       targetPort: 8001
       protocol: TCP
       name: redis-stack
+    - port: 5555
+      targetPort: 5555
+      protocol: TCP
+      name: celery-flower
   selector:
     app: example-backend

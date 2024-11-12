@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-worker
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: example-worker
+    spec:
+      containers:
+      - name: server
+        image: localhost:5000/kubelearn
+        imagePullPolicy: Always
+        command: ["celery"]
+        args: ["-A", "example.worker", "worker", "--loglevel=DEBUG" ]
+        env:
+          - name: CELERY_BROKER_URL
+            value: "redis://redis:6379"
+          - name: CELERY_RESULT_BACKEND
+            value: "redis://redis:6379"
+
