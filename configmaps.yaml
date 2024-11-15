@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-config
+  namespace: default
+data:
+  log_level: DEBUG
+  celery_broker: "redis://redis-service:6379/0"
+  celery_backend: "redis://redis-service:6379/0"

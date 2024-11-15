@@ -6,7 +6,7 @@ Learning Kubernetes
 - [Docs](https://kubernetes.io/docs/)
 - [Pod Communication](https://kubernetes.io/docs/tasks/access-application-cluster/communicate-containers-same-pod-shared-volume/)
 
-## Create deployment
+## Create deployment (all in one)
 ```bash
 kubectl apply -f example-backend-deployment.yaml
 ```
@@ -41,10 +41,34 @@ kubectl get services
 kubectl get deployments
 ```
 
-### Get Service
+### Check, if DNS is running
+```shell
+kubectl get services kube-dns --namespace=kube-system
+```
+
+### Get Service URL
 Create a proxy to access the service ports
 ```bash
 minikube service example-backend-service --url
+```
+## Create Deployment (standalone redis)
+
+### Deploy redis
+```shell
+kubctl apply -f redis-deployment.yaml
+```
+
+### Create configmap for example
+```shell
+kubectl create -f configmaps.yaml 
+```
+### Check configmaps
+```shell
+kubectl get configmaps   
+```
+### Deploy Example-no-redis
+```shell
+kubectl apply -f example-backend-no-redis.yaml
 ```
 
 ## Rolling Update

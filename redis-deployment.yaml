@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis-deployment
+  name: redis-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-deployment
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: redis-deployment
+    spec:
+      containers:
+      - image: redis/redis-stack
+        name: redis-container
+        ports:
+        - containerPort: 6379
+          name: redis-port
+        - containerPort: 8001
+          name: stack-port
+        resources:
+          requests:
+            cpu: 1
+        volumeMounts:
+        - name: data
+          mountPath: /redis-master-data
+        - name: redis-config
+          mountPath: /redis-master
+      volumes:
+      - name: redis-config
+        configMap:
+          name: my-redis-config
+      - name: data
+        emptyDir: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis-service
+  name: redis-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: redis-port
+      protocol: TCP
+      name: redis
+    - port: 8001
+      targetPort: stack-port
+      protocol: TCP
+      name: redis-stack
+  selector:
+    app: redis-deployment
